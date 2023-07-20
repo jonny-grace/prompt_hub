@@ -5,16 +5,16 @@ import { useState, useEffect } from "react";
 import { signIn, signOut, getProviders, useSession } from "next-auth/react";
 
 const NavBar = () => {
-  const isUserLogedIn = true;
+  const { data: session } = useSession();
   //create a provider state and asign their value from next-auth providers using useffect
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const Response = await getProviders();
       setProviders(Response);
     };
-    setProviders(Response);
+    setUpProviders();
   }, []);
 
   return (
@@ -31,7 +31,7 @@ const NavBar = () => {
       </Link>
       {/* Mobile Navigation */}
       <div className=" sm:flex hidden">
-        {isUserLogedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href={"/create_prompt"} className=" black_btn">
               create post
@@ -41,7 +41,7 @@ const NavBar = () => {
             </button>
             <Link href={"profile"}>
               <Image
-                src={"/assets/images/logo.svg"}
+                src={session?.user.image}
                 width={37}
                 height={37}
                 className=" rounded-full"
@@ -67,10 +67,10 @@ const NavBar = () => {
       </div>
       {/* Mobile Navigation  */}
       <div className="sm:hidden flex relative">
-        {isUserLogedIn ? (
+        {session?.user ? (
           <div className=" flex">
             <Image
-              src={"/assets/images/logo.svg"}
+              src={session?.user.image}
               width={37}
               height={37}
               className=" rounded-full"
